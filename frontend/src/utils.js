@@ -1,0 +1,1 @@
+export const BACKEND_URL ="https://rajblog-app-xbhb.onrender.com"
