@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-  origin: ["http://localhost:5173","https://rajblog-app.vercel.app/login"],
+  origin: process.env.FRONTEND_URL,
   methods:["GET","POST","PUT","DELETE"],
   credentials:true,
 }));
