@@ -4,42 +4,35 @@ import mongoose from "mongoose";
 import fileUpload from 'express-fileupload';
 import { v2 as cloudinary } from 'cloudinary';
 import cookieParser from 'cookie-parser';
+import cors from "cors";
 
 import userRoute from "./routes/user.route.js";
 import blogRoute from "./routes/blog.route.js";
-import cors from "cors";
 
 const app = express();
 dotenv.config();
 
-const port = process.env.PORT || 5000; // Add fallback for port
+const port = process.env.PORT || 5000; // Fallback for port
 const MONOGO_URL = process.env.MONOG_URI;
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true, 
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    // Allow sending cookies and authentication headers
-  })
-);
+// CORS Configuration
+app.use(cors({
+  origin: process.env.FRONTEND_URL, // Ensure this is set in your .env file
+  credentials: true, // Allow credentials like cookies
+  methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
+}));
 
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
-);
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp/",
+}));
 
 // Database Connection
-mongoose.connect(MONOGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(MONOGO_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
