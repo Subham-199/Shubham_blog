@@ -13,15 +13,22 @@ const app = express();
 dotenv.config();
 
 const port = process.env.PORT || 5000; // Fallback for port
-const MONOGO_URL = process.env.MONOG_URI;
+const MONGO_URL = process.env.MONGO_URI; // Fixed environment variable
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS Configuration
+// CORS Configuration with multiple origins
+const allowedOrigins = process.env.FRONTEND_URL.split(',');
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // Ensure this is set in your .env file
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true, // Allow credentials like cookies
   methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
 }));
@@ -32,7 +39,7 @@ app.use(fileUpload({
 }));
 
 // Database Connection
-mongoose.connect(MONOGO_URL)
+mongoose.connect(MONGO_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
