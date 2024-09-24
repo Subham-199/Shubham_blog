@@ -21,13 +21,10 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",                // For local development
-      "https://raj-blog-app.vercel.app",      // Vercel Frontend
-      "https://rajblog-app.onrender.com"      // Render Backend
-    ],
+    origin: process.env.FRONTEND_URL,
+    credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,  // Allow sending cookies and authentication headers
+    // Allow sending cookies and authentication headers
   })
 );
 
