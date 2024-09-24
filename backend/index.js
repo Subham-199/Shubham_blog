@@ -12,42 +12,52 @@ import cors from "cors";
 const app = express();
 dotenv.config();
 
-
-const port = process.env.PORT;
+const port = process.env.PORT || 5000; // Add fallback for port
 const MONOGO_URL = process.env.MONOG_URI;
-//DB CODE
 
-//midddle ware
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
-  origin: ["http://localhost:5173","https://raj-blog-app.vercel.app/login"],
-  methods:["GET","POST","PUT","DELETE"],
-  credentials:true,
-}));
+    origin: [
+      "http://localhost:5173",                // For local development
+      "https://raj-blog-app.vercel.app",      // Vercel Frontend
+      "https://rajblog-app.onrender.com"      // Render Backend
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,  // Allow sending cookies and authentication headers
+  })
+);
 
 app.use(
-    fileUpload({
+  fileUpload({
     useTempFiles: true,
-    tempFileDir:"/tmp/"
-}));
-try {
-   mongoose.connect(MONOGO_URL);
-   console.log("Connected to MonogDB");
-} catch (error){
-  console.log(error)
-}
-// defining routes
+    tempFileDir: "/tmp/",
+  })
+);
+
+// Database Connection
+mongoose.connect(MONOGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("MongoDB connection error:", error));
+
+// Define routes
 app.use("/api/users", userRoute);
 app.use("/api/blogs", blogRoute);
-//Cloudinary
-cloudinary.config({ 
-    cloud_name: process.env.CLOUD_NAME, 
-    api_key: process.env.CLOUD_API_KEY, 
-    api_secret: process.env.CLOUD_API_SECRET_KEY,
+
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET_KEY,
 });
 
+// Start the server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
+  console.log(`Server is running on port ${port}`);
 });
