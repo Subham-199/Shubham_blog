@@ -28,7 +28,7 @@ app.use(cors({
 }));
 
 // Content Security Policy Middleware
-/*app.use((req, res, next) => {
+app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", `
       default-src 'self';
       script-src 'self' 'unsafe-inline' https://your-allowed-scripts-source.com;
@@ -38,7 +38,7 @@ app.use(cors({
       font-src 'self' https://rajblog-app.onrender.com;
   `);
   next();
-});*/
+});
 
 app.use(fileUpload({
   useTempFiles: true,
