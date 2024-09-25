@@ -1,158 +1,180 @@
-import React, { useState } from "react";
-import { FaEnvelope, FaMapMarkerAlt, FaPhone, FaLinkedin } from "react-icons/fa";
-import { useForm } from "react-hook-form";
-import axios from "axios";
-import toast from "react-hot-toast";
+import React, { useState } from 'react';
+import { FaLinkedin, FaGithub, FaEnvelope, FaPhone } from 'react-icons/fa';
 
-function Contact() {
-  const [showEmail, setShowEmail] = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
-  const [showLinkedIn, setShowLinkedIn] = useState(false);
+function ProfilePage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '', // New phone field
+    message: '',
+  });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const onSubmit = async (data) => {
-    const userInfo = {
-      access_key: "b6b71d58-32c7-4a14-bd08-75ab66760c4b",
-      name: data.username,
-      email: data.email,
-      message: data.message,
-    };
-    try {
-      await axios.post("https://api.web3forms.com/submit", userInfo);
-      toast.success("Message sent successfully");
-    } catch (error) {
-      toast.error("An error occurred");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        access_key: "b6b71d58-32c7-4a14-bd08-75ab66760c4b", // Web3Forms access key
+        ...formData,
+      }),
+    });
+    const result = await response.json();
+    if (result.success) {
+      setIsSubmitted(true);
+    } else {
+      alert('Something went wrong. Please try again.');
     }
   };
 
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
+    setIsSubmitted(false);
+  };
+
   return (
-    <div className="bg-gray-50 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl w-full space-y-8 bg-white p-10 rounded-lg shadow-lg">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Contact Us</h2>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between">
-          <div className="w-full md:w-1/2 mb-8 md:mb-0 md:pr-4">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">
-              Send us a message
-            </h3>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  name="username"
-                  placeholder="Your Name"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  {...register("username", { required: true })}
-                />
-                {errors.username && (
-                  <span className="text-sm text-red-500 font-semibold">
-                    This field is required
-                  </span>
-                )}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-4">
+      {/* Profile Picture and Info */}
+      <div className="bg-white p-6 rounded-lg shadow-lg text-center w-full max-w-md transition-transform transform hover:scale-105">
+        <img
+          src="https://drive.google.com/file/d/1GLUK5JXZLAD9RItD2TCu9b5bm5T9B9Rj/view"
+          alt="Profile"
+          className="rounded-full w-24 h-24 mx-auto"
+        />
+        <h2 className="text-xl font-semibold mt-4 text-gray-900">Anshu Raj</h2>
+        <p className="text-gray-600">Software Developer | Content Creator</p>
+        <p className="text-gray-600">Ecosystem Builder | Tech Educator</p>
+      </div>
+        
+      {/* Links */}
+      <div className="w-full max-w-md mt-6">
+        <a
+          href="https://www.linkedin.com/in/anshuraj09/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block bg-white shadow-lg rounded-lg p-4 mb-4 flex items-center justify-between transition-transform transform hover:scale-105"
+        >
+          <FaLinkedin className="text-blue-600 text-xl" />
+          <span className="text-gray-800">LinkedIn</span>
+        </a>
+
+        <a
+          href="https://github.com/Anshuraj09"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block bg-white shadow-lg rounded-lg p-4 mb-4 flex items-center justify-between transition-transform transform hover:scale-105"
+        >
+          <FaGithub className="text-black text-xl" />
+          <span className="text-gray-800">GitHub</span>
+        </a>
+
+        <a
+          href="mailto:anshuraj2771@gmail.com"
+          className="block bg-white shadow-lg rounded-lg p-4 mb-4 flex items-center justify-between transition-transform transform hover:scale-105"
+        >
+          <FaEnvelope className="text-red-600 text-xl" />
+          <span className="text-gray-800">Email</span>
+        </a>
+
+        <a
+          href="tel:+917079898902"
+          className="block bg-white shadow-lg rounded-lg p-4 mb-4 flex items-center justify-between transition-transform transform hover:scale-105"
+        >
+          <FaPhone className="text-green-600 text-xl" />
+          <span className="text-gray-800">Call Me</span>
+        </a>
+      </div>
+
+      {/* Contact Me Button */}
+      <button
+        onClick={handleModalToggle}
+        className="mt-6 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105"
+      >
+        Contact Me
+      </button>
+
+      {/* Modal for Contact Form */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
+            <button
+              className="absolute top-2 right-2 text-gray-600"
+              onClick={handleModalToggle}
+            >
+              ✕
+            </button>
+
+            {isSubmitted ? (
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-green-600">Message Sent Successfully!</h3>
+                <p className="mt-4">Thank you for getting in touch!</p>
               </div>
-              <div>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  {...register("email", { required: true })}
-                />
-                {errors.email && (
-                  <span className="text-sm text-red-500 font-semibold">
-                    This field is required
-                  </span>
-                )}
-              </div>
-              <div>
-                <textarea
-                  name="message"
-                  placeholder="Your Message"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  {...register("message", { required: true })}
-                />
-                {errors.message && (
-                  <span className="text-sm text-red-500 font-semibold">
-                    This field is required
-                  </span>
-                )}
-              </div>
-              <div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <h3 className="text-lg font-semibold mb-4 text-center">Contact Me</h3>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Message</label>
+                  <textarea
+                    name="message"
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
+                    rows="4"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  />
+                </div>
                 <button
                   type="submit"
-                  className="w-full bg-black text-white px-4 py-2 rounded-lg hover:bg-yellow-600 duration-300"
+                  className="w-full p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 >
                   Send Message
                 </button>
-              </div>
-            </form>
-          </div>
-          <div className="w-full md:w-1/2 md:pl-4">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">
-              Contact Information
-            </h3>
-            <ul className="space-y-4">
-              <li className="flex items-center space-x-2">
-                <FaPhone className="text-red-500" />
-                <button
-                  onClick={() => setShowPhone(!showPhone)}
-                  className="text-blue-600 hover:underline"
-                >
-                  {showPhone ? (
-                    <a href="tel:+917079898902">+91 7079898902</a>
-                  ) : (
-                    "Show Phone Number"
-                  )}
-                </button>
-              </li>
-              <li className="flex items-center space-x-2">
-                <FaEnvelope className="text-pink-500" />
-                <button
-                  onClick={() => setShowEmail(!showEmail)}
-                  className="text-blue-600 hover:underline"
-                >
-                  {showEmail ? (
-                    <a href="mailto:anshuraj2771@gmail.com">anshuraj2771@gmail.com</a>
-                  ) : (
-                    "Show Email Address"
-                  )}
-                </button>
-              </li>
-              <li className="flex items-center space-x-2">
-                <FaMapMarkerAlt className="text-green-500" />
-                <span>Delhi, NCR, India</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <FaLinkedin className="text-blue-600" />
-                <button
-                  onClick={() => setShowLinkedIn(!showLinkedIn)}
-                  className="text-blue-600 hover:underline"
-                >
-                  {showLinkedIn ? (
-                    <a
-                      href="https://www.linkedin.com/in/anshuraj09/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      LinkedIn Profile
-                    </a>
-                  ) : (
-                    "Show LinkedIn Profile"
-                  )}
-                </button>
-              </li>
-            </ul>
+              </form>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
-export default Contact;
+export default ProfilePage;
