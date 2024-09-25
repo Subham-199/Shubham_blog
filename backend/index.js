@@ -13,7 +13,8 @@ const app = express();
 dotenv.config();
 
 const port = process.env.PORT || 5000; // Fallback for port
-const MONOGO_URL = process.env.MONOG_URI;
+//const MONOGO_URL = process.env.MONOG_URI;
+const MONGO_URL = process.env.MONGO_URI; 
 
 // Middleware
 app.use(express.json());
