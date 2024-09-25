@@ -13,8 +13,7 @@ const app = express();
 dotenv.config();
 
 const port = process.env.PORT || 5000; // Fallback for port
-//const MONOGO_URL = process.env.MONOG_URI;
-const MONOGO_URL = process.env.MONGO_URI; 
+const MONGO_URL = process.env.MONGO_URI;  // Corrected variable name
 
 // Middleware
 app.use(express.json());
@@ -33,7 +32,7 @@ app.use(fileUpload({
 }));
 
 // Database Connection
-mongoose.connect(MONOGO_URL)
+mongoose.connect(MONGO_URL)  // Corrected the typo here as well
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
