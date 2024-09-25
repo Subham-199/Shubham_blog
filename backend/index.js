@@ -21,14 +21,14 @@ app.use(cookieParser());
 
 // CORS Configuration
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173"], // Ensure this is set in your .env file
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173","https://rajblog-app.onrender.com"], // Ensure this is set in your .env file
   credentials: true, // Allow credentials like cookies
   methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 // Content Security Policy Middleware
-app.use((req, res, next) => {
+/*app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", `
       default-src 'self';
       script-src 'self' 'unsafe-inline' https://your-allowed-scripts-source.com;
@@ -38,7 +38,7 @@ app.use((req, res, next) => {
       font-src 'self' https://rajblog-app.onrender.com;
   `);
   next();
-});
+});*/
 
 app.use(fileUpload({
   useTempFiles: true,
