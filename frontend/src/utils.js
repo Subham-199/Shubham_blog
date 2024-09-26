@@ -1,1 +1,3 @@
-export const BACKEND_URL ="https://rajblog-app.onrender.com"
+export const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4001';
+
+
