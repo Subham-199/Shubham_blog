@@ -21,9 +21,9 @@ app.use(cookieParser());
 
 // CORS Configuration
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173","https://rajblog-app.onrender.com"], // Ensure this is set in your .env file
-  credentials: true, // Allow credentials like cookies
-  methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "https://rajblog-app.onrender.com"], 
+  credentials: true, 
+  methods: ["GET", "POST", "PUT", "DELETE"], 
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
@@ -33,9 +33,14 @@ app.use(fileUpload({
 }));
 
 // Database Connection
-mongoose.connect(MONGO_URL)  // Corrected the typo here as well
+mongoose.connect(MONGO_URL)  
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
+
+// Define a root route
+app.get('/', (req, res) => {
+    res.send('Welcome to the API!');  // Response for root URL
+});
 
 // Define routes
 app.use("/api/users", userRoute);
