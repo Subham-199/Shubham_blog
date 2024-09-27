@@ -6,19 +6,18 @@ import { useAuth } from "../context/AuthProvider";
 import { BACKEND_URL } from "../utils";
 
 function Login() {
-  const { isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
-
+  const { setIsAuthenticated, setProfile } = useAuth();
   const navigateTo = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("user"); // Default to "user"
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const { data } = await axios.post(
-        BACKEND_URL+"/api/users/login",
+        BACKEND_URL + "/api/users/login",
         { email, password, role },
         {
           withCredentials: true,
@@ -29,20 +28,29 @@ function Login() {
       );
       console.log(data);
       // Store the token in localStorage
-      localStorage.setItem("jwt", data.token); // storing token in localStorage so that if user refreshed the page it will not redirect again in login
-      toast.success(data.message || "User Logined successfully", {
+      localStorage.setItem("jwt", data.token);
+      toast.success(data.message || "User Logged in successfully", {
         duration: 3000,
       });
+
+      // Set user profile and authentication status
       setProfile(data);
       setIsAuthenticated(true);
+
+      // Reset form fields
       setEmail("");
       setPassword("");
-      setRole("");
-      navigateTo("/");
+
+      // Navigate based on role
+      if (data.role === "admin") {
+        navigateTo("/dashboard");
+      } else {
+        navigateTo("/");
+      }
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response.data.message || "Please fill the required fields",
+        error.response?.data?.message || "Please fill in the required fields",
         {
           duration: 3000,
         }
@@ -59,14 +67,19 @@ function Login() {
               Raj<span className="text-blue-500">Blog</span>
             </div>
             <h1 className="text-xl font-semibold mb-6">Login</h1>
+
+            {/* Select Role Dropdown */}
+            <label className="mb-2" htmlFor="role">
+              Select Role
+            </label>
             <select
+              id="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full p-2 mb-4 border rounded-md"
             >
-              <option value="">Select Role</option>
-              <option value="user">user</option>
-              <option value="admin">admin</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
             </select>
 
             <div className="mb-4">
@@ -75,7 +88,8 @@ function Login() {
                 placeholder="Your Email Address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
+                required
               />
             </div>
 
@@ -85,7 +99,8 @@ function Login() {
                 placeholder="Your Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
+                required
               />
             </div>
 

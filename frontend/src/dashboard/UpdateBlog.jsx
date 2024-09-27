@@ -11,12 +11,10 @@ function UpdateBlog() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [about, setAbout] = useState("");
-
   const [blogImage, setBlogImage] = useState("");
   const [blogImagePreview, setBlogImagePreview] = useState("");
 
   const changePhotoHandler = (e) => {
-    console.log(e);
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -30,8 +28,7 @@ function UpdateBlog() {
     const fetchBlog = async () => {
       try {
         const { data } = await axios.get(
-          `BACKEND_URL+/api/blogs/single-blog/${id}`,
-
+          `${BACKEND_URL}/api/blogs/single-blog/${id}`, // Fixed URL construction
           {
             withCredentials: true,
             headers: {
@@ -39,14 +36,13 @@ function UpdateBlog() {
             },
           }
         );
-        console.log(data);
         setTitle(data?.title);
         setCategory(data?.category);
         setAbout(data?.about);
         setBlogImage(data?.blogImage.url);
       } catch (error) {
         console.log(error);
-        toast.error("Please fill the required fields");
+        toast.error("Failed to fetch blog data");
       }
     };
     fetchBlog();
@@ -55,14 +51,14 @@ function UpdateBlog() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("category", category);
-    formData.append("about", about);
+    if (title) formData.append("title", title); // Only append if title is provided
+    if (category) formData.append("category", category); // Only append if category is provided
+    if (about) formData.append("about", about); // Only append if about is provided
+    if (blogImage) formData.append("blogImage", blogImage); // Only append if a new image is uploaded
 
-    formData.append("blogImage", blogImage);
     try {
       const { data } = await axios.put(
-        `BACKEND_URL+/api/blogs/update/${id}`,
+        `${BACKEND_URL}/api/blogs/update/${id}`, // Fixed URL construction
         formData,
         {
           withCredentials: true,
@@ -71,13 +67,12 @@ function UpdateBlog() {
           },
         }
       );
-      console.log(data);
       toast.success(data.message || "Blog updated successfully");
       navigateTo("/");
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response.data.message || "Please fill the required fields"
+        error.response?.data?.message || "Failed to update blog"
       );
     }
   };
@@ -132,7 +127,7 @@ function UpdateBlog() {
             <textarea
               rows="6"
               className="w-full p-2 mb-4 border rounded-md"
-              placeholder="Something about your blog atleast 200 characters!"
+              placeholder="Something about your blog at least 200 characters!"
               value={about}
               onChange={(e) => setAbout(e.target.value)}
             />

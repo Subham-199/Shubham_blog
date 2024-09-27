@@ -6,8 +6,7 @@ import { useAuth } from "../context/AuthProvider";
 import { BACKEND_URL } from "../utils";
 
 function Register() {
-  const { isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
-
+  const { setIsAuthenticated, setProfile } = useAuth();
   const navigateTo = useNavigate();
 
   const [name, setName] = useState("");
@@ -16,11 +15,11 @@ function Register() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [education, setEducation] = useState("");
+  const [otherEducation, setOtherEducation] = useState(""); // State for other education
   const [photo, setPhoto] = useState("");
   const [photoPreview, setPhotoPreview] = useState("");
 
   const changePhotoHandler = (e) => {
-    console.log(e);
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -38,11 +37,12 @@ function Register() {
     formData.append("phone", phone);
     formData.append("password", password);
     formData.append("role", role);
-    formData.append("education", education);
+    formData.append("education", education === "Other" ? otherEducation : education); // Use the other education if selected
     formData.append("photo", photo);
+    
     try {
       const { data } = await axios.post(
-        BACKEND_URL+"/api/users/register",
+        `${BACKEND_URL}/api/users/register`,
         formData,
         {
           withCredentials: true,
@@ -52,7 +52,7 @@ function Register() {
         }
       );
       console.log(data);
-      localStorage.setItem("jwt", data.token); // storing token in localStorage so that if user refreshed the page it will not redirect again in login
+      localStorage.setItem("jwt", data.token); // Storing token in localStorage
       toast.success(data.message || "User registered successfully");
       setProfile(data);
       setIsAuthenticated(true);
@@ -62,13 +62,14 @@ function Register() {
       setPassword("");
       setRole("");
       setEducation("");
+      setOtherEducation(""); // Reset other education input
       setPhoto("");
       setPhotoPreview("");
       navigateTo("/");
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response.data.message || "Please fill the required fields"
+        error.response?.data?.message || "Please fill the required fields"
       );
     }
   };
@@ -97,7 +98,7 @@ function Register() {
                 placeholder="Your Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -106,7 +107,7 @@ function Register() {
                 placeholder="Your Email Address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -115,7 +116,7 @@ function Register() {
                 placeholder="Your Phone Number"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -124,20 +125,37 @@ function Register() {
                 placeholder="Your Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <select
               value={education}
-              onChange={(e) => setEducation(e.target.value)}
+              onChange={(e) => {
+                setEducation(e.target.value);
+                if (e.target.value !== "Other") {
+                  setOtherEducation(""); // Reset if not other
+                }
+              }}
               className="w-full p-2 mb-4 border rounded-md"
             >
-              <option value="">Select Your Education</option>
-              <option value="BCA ">BCA</option>
-              <option value="MCA ">MCA</option>
-              <option value="MBA ">MBA</option>
-              <option value="BBA ">BBA</option>
+              <option value="">Select Your Qualification</option>
+              <option value="BCA">BCA</option>
+              <option value="MCA">MCA</option>
+              <option value="MBA">MBA</option>
+              <option value="BBA">BBA</option>
+              <option value="Other">Other</option> {/* Added Other option */}
             </select>
+            {education === "Other" && (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Please specify your qualification"
+                  value={otherEducation}
+                  onChange={(e) => setOtherEducation(e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            )}
             <div className="flex items-center mb-4">
               <div className="photo w-20 h-20 mr-4">
                 <img
@@ -148,7 +166,7 @@ function Register() {
               <input
                 type="file"
                 onChange={changePhotoHandler}
-                className="w-full p-2  border rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <p className="text-center mb-4">

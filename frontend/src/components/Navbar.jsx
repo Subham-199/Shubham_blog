@@ -9,9 +9,7 @@ import { BACKEND_URL } from "../utils";
 
 function Navbar() {
   const [show, setShow] = useState(false);
-
   const { profile, isAuthenticated, setIsAuthenticated } = useAuth();
-  console.log(profile?.user);
   const navigateTo = useNavigate();
 
   const handleLogout = async (e) => {
@@ -41,25 +39,13 @@ function Navbar() {
           {/* Desktop */}
           <div className="mx-6">
             <ul className="hidden md:flex space-x-6">
-              <Link to="/" className="hover:text-blue-500">
-                HOME
-              </Link>
-              <Link to="/blogs" className="hover:text-blue-500">
-                BLOGS
-              </Link>
-              <Link to="/creators" className="hover:text-blue-500">
-                CREATORS
-              </Link>
-              <Link to="/about" className="hover:text-blue-500">
-                ABOUT
-              </Link>
-              <Link to="/contact" className="hover:text-blue-500">
-                CONTACT
-              </Link>
+              <Link to="/" className="hover:text-blue-500">HOME</Link>
+              <Link to="/blogs" className="hover:text-blue-500">BLOGS</Link>
+              <Link to="/creators" className="hover:text-blue-500">CREATORS</Link>
+              <Link to="/about" className="hover:text-blue-500">ABOUT</Link>
+              <Link to="/contact" className="hover:text-blue-500">CONTACT</Link>
               {!isAuthenticated && (
-                <Link to="/login" className="hover:text-blue-500">
-                  LOGIN
-                </Link>
+                <Link to="/login" className="hover:text-blue-500">LOGIN</Link>
               )}
             </ul>
             <div className="md:hidden" onClick={() => setShow(!show)}>
@@ -67,17 +53,14 @@ function Navbar() {
             </div>
           </div>
           <div className="hidden md:flex space-x-2">
-            {isAuthenticated && profile?.user?.role === "admin" ? (
+            {isAuthenticated && profile?.user?.role === "admin" && (
               <Link
                 to="/dashboard"
                 className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
               >
                 DASHBOARD
               </Link>
-            ) : (
-              ""
             )}
-
             {!isAuthenticated ? (
               <Link
                 to="/login"
@@ -101,62 +84,20 @@ function Navbar() {
         {show && (
           <div className="bg-white">
             <ul className="flex flex-col h-screen items-center justify-center space-y-3 md:hidden text-xl">
-              <Link
-                to="/"
-                onClick={() => setShow(!show)}
-                smooth="true"
-                duration={500}
-                offset={-70}
-                activeClass="active"
-                className="hover:text-blue-500"
-              >
-                HOME
-              </Link>
-              <Link
-                to="/blogs"
-                onClick={() => setShow(!show)}
-                smooth="true"
-                duration={500}
-                offset={-70}
-                activeClass="active"
-                className="hover:text-blue-500"
-              >
-                BLOGS
-              </Link>
-              <Link
-                to="/creators"
-                onClick={() => setShow(!show)}
-                smooth="true"
-                duration={500}
-                offset={-70}
-                activeClass="active"
-                className="hover:text-blue-500"
-              >
-                CREATORS
-              </Link>
-              <Link
-                to="/about"
-                onClick={() => setShow(!show)}
-                smooth="true"
-                duration={500}
-                offset={-70}
-                activeClass="active"
-                className="hover:text-blue-500"
-              >
-                ABOUT
-              </Link>
-              <Link
-                to="/contact"
-                onClick={() => setShow(!show)}
-                smooth="true"
-                duration={500}
-                offset={-70}
-                activeClass="active"
-                className="hover:text-blue-500"
-              >
-                CONTACT
-              </Link>
-              {/* Login/Logout Button in mobile */}
+              <Link to="/" onClick={() => setShow(!show)} className="hover:text-blue-500">HOME</Link>
+              <Link to="/blogs" onClick={() => setShow(!show)} className="hover:text-blue-500">BLOGS</Link>
+              <Link to="/creators" onClick={() => setShow(!show)} className="hover:text-blue-500">CREATORS</Link>
+              <Link to="/about" onClick={() => setShow(!show)} className="hover:text-blue-500">ABOUT</Link>
+              <Link to="/contact" onClick={() => setShow(!show)} className="hover:text-blue-500">CONTACT</Link>
+              {isAuthenticated && profile?.user?.role === "admin" && (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setShow(!show)}
+                  className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
+                >
+                  DASHBOARD
+                </Link>
+              )}
               {!isAuthenticated ? (
                 <Link
                   to="/login"

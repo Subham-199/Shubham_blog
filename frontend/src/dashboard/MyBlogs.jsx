@@ -24,7 +24,7 @@ function MyBlogs() {
 
   const handleDelete = async (id) => {
     await axios
-      .delete(`BACKEND_URL+/api/blogs/delete/${id}`, {
+      .delete(`${BACKEND_URL}/api/blogs/delete/${id}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -32,9 +32,10 @@ function MyBlogs() {
         setMyBlogs((value) => value.filter((blog) => blog._id !== id));
       })
       .catch((error) => {
-        toast.error(error.response.message || "Failed to delete blog");
+        toast.error(error.response?.data?.message || "Failed to delete blog");
       });
   };
+  
   return (
     <div>
       <div className="container mx-auto my-12 p-4">

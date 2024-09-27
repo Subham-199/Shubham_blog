@@ -5,6 +5,8 @@ import Devotional from "../Home/Devotional";
 import Creator from "../Home/Creator";
 import Sports from "../Home/Sports";
 import Coding from "../Home/Coding";
+import Entertainment from "../Home/Entertainment";
+import Business from "../Home/Business";
 
 function Home() {
   return (
@@ -14,6 +16,8 @@ function Home() {
       <Sports/>
       <Coding/>
       <Devotional />
+      <Entertainment />
+      <Business/>
       <Creator />
 
     </div>
