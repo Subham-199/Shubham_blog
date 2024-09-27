@@ -12,7 +12,7 @@ function Detail() {
     const fetchblogs = async () => {
       try {
         const { data } = await axios.get(
-          `BACKEND_URL+/api/blogs/single-blog/${id}`,
+          `${BACKEND_URL}+/api/blogs/single-blog/${id}`,
 
           {
             withCredentials: true,
