@@ -17,12 +17,11 @@ function Navbar() {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.get(
-        BACKEND_URL+"/api/users/logout",
-        { withCredentials: true }
-      );
+      const { data } = await axios.get(BACKEND_URL + "/api/users/logout", {
+        withCredentials: true,
+      });
       console.log(data);
-      localStorage.removeItem("jwt"); // deleting token in localStorage so that if user logged out it will goes to login page
+      localStorage.removeItem("jwt");
       toast.success(data.message);
       setIsAuthenticated(false);
       navigateTo("/login");
@@ -34,13 +33,13 @@ function Navbar() {
 
   return (
     <>
-      <nav className=" shadow-lg px-4 py-2">
+      <nav className="shadow-lg px-4 py-2">
         <div className="flex items-center justify-between container mx-auto">
           <div className="font-semibold text-xl">
             Raj<span className="text-blue-500">Blog</span>
           </div>
           {/* Desktop */}
-          <div className=" mx-6">
+          <div className="mx-6">
             <ul className="hidden md:flex space-x-6">
               <Link to="/" className="hover:text-blue-500">
                 HOME
@@ -57,6 +56,11 @@ function Navbar() {
               <Link to="/contact" className="hover:text-blue-500">
                 CONTACT
               </Link>
+              {!isAuthenticated && (
+                <Link to="/login" className="hover:text-blue-500">
+                  LOGIN
+                </Link>
+              )}
             </ul>
             <div className="md:hidden" onClick={() => setShow(!show)}>
               {show ? <IoCloseSharp size={24} /> : <AiOutlineMenu size={24} />}
@@ -65,18 +69,18 @@ function Navbar() {
           <div className="hidden md:flex space-x-2">
             {isAuthenticated && profile?.user?.role === "admin" ? (
               <Link
-              to="/dashboard"
-              className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
-            >
-              DASHBOARD
-            </Link>
+                to="/dashboard"
+                className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
+              >
+                DASHBOARD
+              </Link>
             ) : (
               ""
             )}
 
             {!isAuthenticated ? (
               <Link
-                to="/Login"
+                to="/login"
                 className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
               >
                 LOGIN
@@ -93,7 +97,7 @@ function Navbar() {
             )}
           </div>
         </div>
-        {/* mobile navbar */}
+        {/* Mobile navbar */}
         {show && (
           <div className="bg-white">
             <ul className="flex flex-col h-screen items-center justify-center space-y-3 md:hidden text-xl">
@@ -152,6 +156,23 @@ function Navbar() {
               >
                 CONTACT
               </Link>
+              {/* Login/Logout Button in mobile */}
+              {!isAuthenticated ? (
+                <Link
+                  to="/login"
+                  onClick={() => setShow(!show)}
+                  className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
+                >
+                  LOGIN
+                </Link>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
+                >
+                  LOGOUT
+                </button>
+              )}
             </ul>
           </div>
         )}
