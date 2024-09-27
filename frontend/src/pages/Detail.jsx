@@ -8,16 +8,16 @@ function Detail() {
   const { id } = useParams();
   const [blogs, setblogs] = useState({});
   console.log(blogs);
+
   useEffect(() => {
     const fetchblogs = async () => {
       try {
         const { data } = await axios.get(
-          `${BACKEND_URL}+/api/blogs/single-blog/${id}`,
-
+          `${BACKEND_URL}/api/blogs/single-blog/${id}`, // Corrected URL
           {
             withCredentials: true,
             headers: {
-                "Content-Type": "application/json",
+              "Content-Type": "application/json",
             },
           }
         );
@@ -25,10 +25,12 @@ function Detail() {
         setblogs(data);
       } catch (error) {
         console.log(error);
+        toast.error("Failed to fetch blog details"); // Show an error toast
       }
     };
     fetchblogs();
   }, [id]);
+
   return (
     <div>
       <div>
