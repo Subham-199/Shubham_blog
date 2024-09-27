@@ -15,15 +15,12 @@ import { Toaster } from "react-hot-toast";
 import UpdateBlog from "./dashboard/UpdateBlog";
 import Detail from "./pages/Detail";
 import NotFound from "./pages/NotFound";
+
 function App() {
   const location = useLocation();
-  const hideNavbarFooter = ["/dashboard", "/login", "/register"].includes(
-    location.pathname
-  );
-  const { blogs, isAuthenticated } = useAuth();
-  let token = localStorage.getItem("jwt"); // Retrieve the token directly from the localStorage to maininting the routes protect (Go to login.jsx)
-  console.log(blogs);
-  console.log(isAuthenticated); // it is not using because every page refresh it was redirected to /login
+  const hideNavbarFooter = ["/dashboard", "/login", "/register"].includes(location.pathname);
+  const { isAuthenticated } = useAuth();
+  let token = localStorage.getItem("jwt");
 
   return (
     <div>
@@ -32,21 +29,29 @@ function App() {
         <Route
           exact
           path="/"
-          element={token ? <Home /> : <Navigate to={"/login"} />}
+          element={<Home />} // Allow access to Home for everyone
         />
-        <Route exact path="/blogs" element={<Blogs />} />
+        <Route exact path="/blogs" element={<Blogs />} /> // Allow access to Blogs for everyone
         <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />} />
         <Route exact path="/creators" element={<Creators />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
-        <Route exact path="/dashboard" element={<Dashboard />} />
+        <Route
+          exact
+          path="/dashboard"
+          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} // Protect Dashboard
+        />
 
         {/* Single page route */}
         <Route exact path="/blog/:id" element={<Detail />} />
 
         {/* Update page route */}
-        <Route exact path="/blog/update/:id" element={<UpdateBlog />} />
+        <Route
+          exact
+          path="/blog/update/:id"
+          element={isAuthenticated ? <UpdateBlog /> : <Navigate to="/login" />} // Protect Update Blog
+        />
 
         {/* Universal route */}
         <Route path="*" element={<NotFound />} />
