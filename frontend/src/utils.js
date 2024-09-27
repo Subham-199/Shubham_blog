@@ -1,2 +1,1 @@
-// utils.js
-export const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:4001';
+export const BACKEND_URL = import.meta.env.VITE_RENDER_URL ;
