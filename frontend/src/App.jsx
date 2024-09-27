@@ -20,40 +20,39 @@ function App() {
   const location = useLocation();
   const hideNavbarFooter = ["/dashboard", "/login", "/register"].includes(location.pathname);
   const { isAuthenticated } = useAuth();
-  let token = localStorage.getItem("jwt");
 
   return (
     <div>
+      {/* Show Navbar and Footer only for non-protected routes */}
       {!hideNavbarFooter && <Navbar />}
       <Routes>
-        <Route
-          exact
-          path="/"
-          element={<Home />} // Allow access to Home for everyone
-        />
-        <Route exact path="/blogs" element={<Blogs />} /> // Allow access to Blogs for everyone
+        {/* Home page is accessible for everyone */}
+        <Route exact path="/" element={<Home />} />
+
+        {/* Public Routes: Blogs list and blog detail page */}
+        <Route exact path="/blogs" element={<Blogs />} />  {/* Blogs list accessible to everyone */}
+        <Route exact path="/blog/:id" element={<Detail />} />  {/* Blog detail accessible to everyone */}
+
+        {/* Public Pages */}
         <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />} />
         <Route exact path="/creators" element={<Creators />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
+
+        {/* Protected Routes: Require authentication */}
         <Route
           exact
           path="/dashboard"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} // Protect Dashboard
         />
-
-        {/* Single page route */}
-        <Route exact path="/blog/:id" element={<Detail />} />
-
-        {/* Update page route */}
         <Route
           exact
           path="/blog/update/:id"
           element={isAuthenticated ? <UpdateBlog /> : <Navigate to="/login" />} // Protect Update Blog
         />
 
-        {/* Universal route */}
+        {/* Catch-all for unknown routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
