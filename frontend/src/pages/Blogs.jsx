@@ -1,25 +1,25 @@
 import React from "react";
-import { useAuth } from "../context/AuthProvider";
+import { useAuth } from "../context/AuthProvider"; // Import your Auth context
 import { Link } from "react-router-dom";
 
 function Blogs() {
-  const { blogs } = useAuth();
+  const { blogs } = useAuth(); // Assuming blogs are fetched from Auth context
 
   console.log(blogs);
   return (
     <div>
       <div className="container mx-auto my-12 p-4">
-        <h1 className="text-2xl font-bold mb-6">All Blogs goes here!!!</h1>
+        <h1 className="text-2xl font-bold mb-6">All Blogs go here!!!</h1>
         <p className="text-center mb-8">
           The concept of gods varies widely across different cultures,
-          religions, and belief systems
+          religions, and belief systems.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {blogs && blogs.length > 0 ? (
-            blogs.map((blog, index) => (
+            blogs.map((blog) => (
               <Link
-                to={`/blog/${blog.id}`}
-                key={index}
+                to={`/blog/${blog._id}`} // Use blog._id for the URL
+                key={blog._id} // Unique key for each blog
                 className="relative rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform duration-300"
               >
                 <img
@@ -35,7 +35,9 @@ function Blogs() {
               </Link>
             ))
           ) : (
-            <div></div>
+            <div className="text-center col-span-full">
+              <p>No blogs available</p>
+            </div>
           )}
         </div>
       </div>

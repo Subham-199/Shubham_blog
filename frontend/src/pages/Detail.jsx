@@ -6,14 +6,14 @@ import { BACKEND_URL } from "../utils";
 
 function Detail() {
   const { id } = useParams();
-  const [blogs, setblogs] = useState({});
-  console.log(blogs);
+  const [blog, setBlog] = useState({}); // Rename to blog for clarity
+  console.log(blog);
 
   useEffect(() => {
-    const fetchblogs = async () => {
+    const fetchBlog = async () => {
       try {
         const { data } = await axios.get(
-          `${BACKEND_URL}/api/blogs/single-blog/${id}`, // Corrected URL
+          `${BACKEND_URL}/api/blogs/single-blog/${id}`,
           {
             withCredentials: true,
             headers: {
@@ -22,43 +22,43 @@ function Detail() {
           }
         );
         console.log(data);
-        setblogs(data);
+        setBlog(data); // Assuming the response contains a single blog
       } catch (error) {
         console.log(error);
-        toast.error("Failed to fetch blog details"); // Show an error toast
+        toast.error("Failed to fetch blog details");
       }
     };
-    fetchblogs();
+    fetchBlog();
   }, [id]);
 
   return (
     <div>
       <div>
-        {blogs && (
+        {blog && (
           <section className="container mx-auto p-4">
             <div className="text-blue-500 uppercase text-xs font-bold mb-4">
-              {blogs?.category}
+              {blog?.category}
             </div>
-            <h1 className="text-4xl font-bold mb-6">{blogs?.title}</h1>
+            <h1 className="text-4xl font-bold mb-6">{blog?.title}</h1>
             <div className="flex items-center mb-6">
               <img
-                src={blogs?.adminPhoto}
+                src={blog?.adminPhoto}
                 alt="author_avatar"
                 className="w-12 h-12 rounded-full mr-4"
               />
-              <p className="text-lg font-semibold">{blogs?.adminName}</p>
+              <p className="text-lg font-semibold">{blog?.adminName}</p>
             </div>
 
             <div className="flex flex-col md:flex-row">
-              {blogs?.blogImage && (
+              {blog?.blogImage && (
                 <img
-                  src={blogs?.blogImage?.url}
+                  src={blog?.blogImage?.url}
                   alt="mainblogsImg"
                   className="md:w-1/2 w-full h-[500px] mb-6 rounded-lg shadow-lg cursor-pointer border"
                 />
               )}
               <div className="md:w-1/2 w-full md:pl-6">
-                <p className="text-lg mb-6">{blogs?.about}</p>
+                <p className="text-lg mb-6">{blog?.about}</p>
                 {/* Add more content here if needed */}
               </div>
             </div>
