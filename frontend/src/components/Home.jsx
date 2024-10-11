@@ -7,11 +7,13 @@ import Sports from "../Home/Sports";
 import Coding from "../Home/Coding";
 import Entertainment from "../Home/Entertainment";
 import Business from "../Home/Business";
+import BlogImageCarousel from "../Home/BlogImageCarousel";
 
 function Home() {
   return (
     <div>
-      <Hero />
+      <BlogImageCarousel />
+      <Hero/>
       <Trending />
       <Sports/>
       <Coding/>
@@ -19,6 +21,7 @@ function Home() {
       <Entertainment />
       <Business/>
       <Creator />
+
 
     </div>
   );
