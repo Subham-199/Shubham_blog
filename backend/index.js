@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 // CORS Configuration
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "https://rajblog-app.onrender.com"], 
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "https://shubham-blog-d6hh.onrender.com"], 
   credentials: true, 
   methods: ["GET", "POST", "PUT", "DELETE"], 
   allowedHeaders: ["Content-Type", "Authorization"],
